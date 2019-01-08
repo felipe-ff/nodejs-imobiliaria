@@ -167,7 +167,7 @@ router.get('/:book/delete', (req, res, next) => {
       next(err);
       return;
     }
-    res.redirect(req.baseUrl);
+    //res.redirect(req.baseUrl);
   });
 });
 

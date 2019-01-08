@@ -36,8 +36,6 @@ router.get('/', (req, res, next) => {
       next(err);
       return;
     }
-    console.log(entities);
-    console.log(cursor);
     res.json({
       items: entities,
       nextPageToken: cursor,
@@ -97,6 +95,7 @@ router.put('/:book', (req, res, next) => {
  */
 router.delete('/:book', (req, res, next) => {
   getModel().delete(req.params.book, err => {
+    console.log('OKOKOKOKOKOKOKOKOKOK');
     if (err) {
       next(err);
       return;
