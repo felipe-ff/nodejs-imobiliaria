@@ -87,7 +87,7 @@ router.post(
         next(err);
         return;
       }
-      res.redirect(`${req.baseUrl}/${savedData.id}`);
+      res.json(`${savedData.id}`);
     });
   }
 );

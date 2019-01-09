@@ -100,7 +100,7 @@ router.delete('/:book', (req, res, next) => {
       next(err);
       return;
     }
-    res.status(200).send('OK');
+    res.status(200).send();
   });
 });
 
