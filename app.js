@@ -16,10 +16,16 @@
 const path = require('path');
 const express = require('express');
 const config = require('./config');
-
-var cors = require('cors')
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const cors = require('cors');
+require('./models/User');
+require('./config/passport');
+const passport = require('passport');
 
 const app = express();
+
+const now = new Date();
 
 app.use(cors());
 
@@ -27,6 +33,15 @@ app.disable('etag');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.set('trust proxy', true);
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({ secret: 'passport-tutorial', cookie: { expires: new Date(now.getTime() + 1000) }, resave: false, saveUninitialized: false }));
+
+//app.use(passport.initialize());
+//app.use(passport.session());
+
 
 // Books
 app.use('/books', require('./books/crud'));
