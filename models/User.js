@@ -12,7 +12,7 @@ function generateJWT(id, email) {
     return jwt.sign({
         email: email,
         id: id,
-        exp: parseInt( (expirationDate.getTime() + 10000) / 1000, 10),
+        exp: parseInt( (expirationDate.getTime() + 30000) / 1000, 10),
     }, 'secret');
 }
 

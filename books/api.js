@@ -49,7 +49,7 @@ router.get('/', auth.optional, (req, res, next) => {
     //console.log(moment().isBefore(moment(req.session.cookie._expires)));
     res.json({
       items: entities,
-      loggedIn: req.payload ? (req.isAuthenticated && (req.payload.exp - 6) > req.payload.iat) : false,
+      loggedIn: req.payload ? (req.isAuthenticated && new Date() > req.payload.exp) : false,
       nextPageToken: cursor,
     });
   });
