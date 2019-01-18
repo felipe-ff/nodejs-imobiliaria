@@ -40,12 +40,7 @@ router.get('/', auth.optional, (req, res, next) => {
       next(err);
       return;
     }
-    //console.log(req.headers);
-    //console.log(JSON.parse(req.session._expires));
-    console.log(req.payload);
-    console.log(new Date());
     if (req.payload) console.log(new Date(req.payload.exp * 1000));
-    console.log(req.isAuthenticated);
     //console.log(moment().isBefore(moment(req.session.cookie._expires)));
     res.json({
       items: entities,
@@ -129,8 +124,6 @@ router.post('/login', auth.optional, (req, res, next) => {
  */
 router.get('/:book', (req, res, next) => {
   getModel().read(req.params.book, (err, entity) => {
-    console.log(req.session);
-    console.log(moment().isBefore(req.session._expires));
     entity.loggedIn = moment().isBefore(req.session._expires);
     if (err) {
       next(err);
