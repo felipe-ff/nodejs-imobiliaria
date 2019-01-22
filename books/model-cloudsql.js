@@ -35,15 +35,26 @@ const connection = mysql.createConnection(options);
 function list(limit, token, cb) {
   token = token ? parseInt(token, 10) : 0;
   connection.query(
-    'SELECT * FROM `books` LIMIT ? OFFSET ?',
+    'SELECT * FROM `books` b left join imagesUrl i on (b.id = i.bookId) LIMIT ? OFFSET ?',
     [limit, token],
     (err, results) => {
       if (err) {
         cb(err);
         return;
       }
+
+      //console.log(results);
+      
+      let values = {};
+      let uniqueArray = results.filter(function(item) {
+          let val = item['id'];
+          let exists = values[val];
+          values[val] = true;
+          return !exists;
+      });
+
       const hasMore = results.length === limit ? token + results.length : false;
-      cb(null, results, hasMore);
+      cb(null, uniqueArray, hasMore);
     }
   );
 }
@@ -54,13 +65,32 @@ function create(data, cb) {
       cb(err);
       return;
     }
+    cb(null, res.insertId);
+  });
+}
+
+function createImagesUrl(data, cb) {
+  var sql = 'INSERT INTO `imagesUrl` (bookId, imageUrl) VALUES ?';
+  var values = [];
+  for (let i = 0; data.imageUrl.length > i; i++) {
+    let j = i + 1;
+    let myValues = [];
+    myValues.push(data.bookId, data.imageUrl[i]);
+    values.push(myValues);
+  }
+  
+  connection.query(sql, [values], (err, res) => {
+    if (err) {
+      cb(err);
+      return;
+    }
     read(res.insertId, cb);
   });
 }
 
 function read(id, cb) {
   connection.query(
-    'SELECT * FROM `books` WHERE `id` = ?',
+    'SELECT * FROM `books` left join `imagesUrl` on (books.id = imagesUrl.bookId) WHERE books.id = ?',
     id,
     (err, results) => {
       if (!err && !results.length) {
@@ -73,7 +103,8 @@ function read(id, cb) {
         cb(err);
         return;
       }
-      cb(null, results[0]);
+
+      cb(null, results);
     }
   );
 }
@@ -98,6 +129,7 @@ module.exports = {
   create: create,
   read: read,
   update: update,
+  createImagesUrl: createImagesUrl,
   delete: _delete,
 };
 
