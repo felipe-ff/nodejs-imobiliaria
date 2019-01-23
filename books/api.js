@@ -40,13 +40,10 @@ router.get('/', auth.optional, (req, res, next) => {
       next(err);
       return;
     }
-    if (req.payload) console.log(new Date(req.payload.exp * 1000));
     //console.log(moment().isBefore(moment(req.session.cookie._expires)));
 
     res.json({
       items: entities,
-      loggedIn: req.payload ? (req.isAuthenticated && new Date() > req.payload.exp) : false,
-      nextPageToken: cursor,
     });
   });
 });

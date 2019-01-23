@@ -49,12 +49,17 @@ app.use('/api/books', require('./books/api'));
 
 // Redirect root to /books
 app.get('/', (req, res) => {
-  res.redirect('/books');
+  //res.redirect('/books');
 });
+
+/* this.app.get('*', (req, res) => { 
+  res.sendFile(path.resolve('hpe-angular/index.html')); 
+}); */
 
 // Basic 404 handler
 app.use((req, res) => {
-  res.status(404).send('Not Found');
+  //res.redirect('/');
+  //res.status(404).send('Not Found');
 });
 
 // Basic error handler

@@ -33,10 +33,10 @@ if (
 const connection = mysql.createConnection(options);
 
 function list(limit, token, cb) {
-  token = token ? parseInt(token, 10) : 0;
+  //token = token ? parseInt(token, 10) : 0;
   connection.query(
-    'SELECT * FROM `books` b left join imagesUrl i on (b.id = i.bookId) LIMIT ? OFFSET ?',
-    [limit, token],
+    'SELECT * FROM `books` b left join imagesUrl i on (b.id = i.bookId)', //LIMIT ? OFFSET ?
+    //[limit, token],
     (err, results) => {
       if (err) {
         cb(err);
