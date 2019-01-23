@@ -31,8 +31,6 @@ router.use(bodyParser.json());
 
 /**
  * GET /api/books
- *
- * Retrieve a page of books (up to ten at a time).
  */
 router.get('/', (req, res, next) => {
   getModel().list(10, req.query.pageToken, (err, entities, cursor) => {
@@ -50,8 +48,6 @@ router.get('/', (req, res, next) => {
 
 /**
  * POST /api/books
- *
- * Create a new book.
  */
 router.post('/', (req, res, next) => {
   getModel().create(req.body, (err, entity) => {
@@ -104,7 +100,6 @@ router.post('/login', auth.optional, (req, res, next) => {
             res.send(err);
         }
         const user = passportUser;
-        //user.token = passportUser.generateJWT();
         user.token = User.generateJWT(passportUser.id, passportUser.email);
         //req.isAuthenticated() = true;
         //res.cookie("SESSIONID", user.token, {httpOnly:true, secure:true, maxAge: 555});
@@ -117,8 +112,6 @@ router.post('/login', auth.optional, (req, res, next) => {
 
 /**
  * GET /api/books/:id
- *
- * Retrieve a book.
  */
 router.get('/:book', (req, res, next) => {
   getModel().read(req.params.book, (err, entity) => {
@@ -133,10 +126,8 @@ router.get('/:book', (req, res, next) => {
 
 /**
  * PUT /api/books/:id
- *
- * Update a book.
  */
-router.put('/:book', (req, res, next) => {
+router.put('/:book', auth.required, (req, res, next) => {
   getModel().update(req.params.book, req.body, (err, entity) => {
     if (err) {
       next(err);
@@ -148,10 +139,8 @@ router.put('/:book', (req, res, next) => {
 
 /**
  * DELETE /api/books/:id
- *
- * Delete a book.
  */
-router.delete('/:book', (req, res, next) => {
+router.delete('/:book', auth.required, (req, res, next) => {
   getModel().delete(req.params.book, err => {
     if (err) {
       next(err);
@@ -165,8 +154,7 @@ router.delete('/:book', (req, res, next) => {
  * Errors on "/api/books/*" routes.
  */
 router.use((err, req, res, next) => {
-  // Format error and forward to generic error handler for logging and
-  // responding to the request
+  // Format error and forward to generic error handler for logging and responding to the request
   err.response = {
     message: err.message,
     internalCode: err.code,
