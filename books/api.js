@@ -34,7 +34,7 @@ router.use(bodyParser.json());
  *
  * Retrieve a page of books (up to ten at a time).
  */
-router.get('/', auth.optional, (req, res, next) => {
+router.get('/', (req, res, next) => {
   getModel().list(10, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
       next(err);

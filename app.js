@@ -52,10 +52,6 @@ app.get('/', (req, res) => {
   //res.redirect('/books');
 });
 
-/* this.app.get('*', (req, res) => { 
-  res.sendFile(path.resolve('hpe-angular/index.html')); 
-}); */
-
 // Basic 404 handler
 app.use((req, res) => {
   //res.redirect('/');
