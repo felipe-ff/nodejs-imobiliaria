@@ -119,7 +119,6 @@ router.get('/:book', (req, res, next) => {
       next(err);
       return;
     }
-    //entity.loggedIn = req.session._expires ? moment().isBefore(req.session._expires) : false;
     res.json(entity);
   });
 });
