@@ -89,7 +89,7 @@ router.post('/login', auth.optional, (req, res, next) => {
 
     if (err || !passportUser) {
       return res.status(400).json({
-          message: 'Something is not right',
+          message: 'Usuário ou senha inválidos!',
           user   : user
       });
     }

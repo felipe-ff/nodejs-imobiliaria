@@ -13,9 +13,9 @@ passport.use(new LocalStrategy({
   //Users.findOne({ email }) //PROCURAR NO MYSQL
   //  .then((user) => {
       const user = {id: 1, email: 'felipe.ferraz18@gmail.com'};  
-      /* if(!user || !user.validatePassword(password)) {
+      if (email !== 'admin' || password !== 'admin123') {
         return done(null, false, { errors: { 'email or password': 'is invalid' } });
-      } */
+      }
       return done(null, user);
   //  }).catch(done);
 }));
