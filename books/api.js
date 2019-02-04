@@ -63,7 +63,7 @@ router.post('/', (req, res, next) => {
  * POST /api/books/login
  * POST login route (optional, everyone has access)
  */
-router.post('/login', auth.optional, (req, res, next) => {
+router.post('/login', (req, res, next) => {
   const { body: { user } } = req;
 
   if (!user.email) {
