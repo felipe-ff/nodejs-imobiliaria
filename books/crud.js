@@ -72,10 +72,12 @@ router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req,
     let data = req.body;
     let dataImg = {};
 
+    console.log(req);
+
     // Was an image uploaded? If so, we'll use its public URL
     // in cloud storage.    
     dataImg.imageUrl = [];
-    if (req.files) {
+    if (req.files && req.files > 0) {
       req.files.forEach(element => {
         if (element.cloudStoragePublicUrl) {
           dataImg.imageUrl.push(element.cloudStoragePublicUrl);
@@ -84,7 +86,7 @@ router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req,
       //dataImg.imageUrl = dataImg.imageUrl.slice(0, -1);
     }
 
-    data.author = 'test2';
+    //data.author = 'test2';
 
     // Save the data to the database.
     getModel().create(data, (err, savedId) => {
@@ -94,12 +96,14 @@ router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req,
       }
 
       dataImg.bookId = savedId;
-      getModel().createImagesUrl(dataImg, (err, savedData) => {
-        if (err) {
-          next(err);
-          return;
-        }
-      });
+      if (req.files && req.files > 0) {
+        getModel().createImagesUrl(dataImg, (err, savedData) => {
+          if (err) {
+            next(err);
+            return;
+          }
+        });
+      }
 
       res.json(`${savedId}`);
     });
