@@ -72,14 +72,13 @@ router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req,
     let data = req.body;
     let dataImg = {};
 
-    console.log(req);
-
     // Was an image uploaded? If so, we'll use its public URL
     // in cloud storage.    
     dataImg.imageUrl = [];
-    if (req.files && req.files > 0) {
+    if (req.files) {
       req.files.forEach(element => {
         if (element.cloudStoragePublicUrl) {
+          console.log('entrando');
           dataImg.imageUrl.push(element.cloudStoragePublicUrl);
         }
       });
@@ -96,7 +95,8 @@ router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req,
       }
 
       dataImg.bookId = savedId;
-      if (req.files && req.files > 0) {
+      if (req.files) {
+        console.log(dataImg);
         getModel().createImagesUrl(dataImg, (err, savedData) => {
           if (err) {
             next(err);
