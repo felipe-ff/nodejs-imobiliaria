@@ -33,7 +33,7 @@ router.use(bodyParser.json());
  * GET /api/books
  */
 router.get('/filters?/:filters?', (req, res, next) => {
-  getModel().list(10, filters, req.query.pageToken, (err, entities, cursor) => {
+  getModel().list(10, req.params.filters, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
       next(err);
       return;
