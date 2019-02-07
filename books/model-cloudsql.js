@@ -32,10 +32,36 @@ if (
 
 const connection = mysql.createConnection(options);
 
-function list(limit, token, cb) {
+function listBuildWhere(params) {
+  let sql = '';
+  console.log('AQUI: ' + params);
+  if (params && params !== 'undefined') {
+    let obj = JSON.parse(params);
+    let isFirst = true;
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key) && obj[key]) {
+        let value = obj[key];
+        sql += isFirst ? ' where ' : ' AND ';
+        if (key === 'rangeValues') {
+          sql += 'b.price BETWEEN ' + value[0] + ' AND ' + value[1];
+        } else if (key === 'purpose') {
+          sql += key + ' = ' + value.code;
+        } else {
+          sql += key + ' = ' + value;
+        }
+      }
+      isFirst = false;
+    }
+    console.log(sql);
+  }
+  return sql;
+}
+
+function list(limit, params, token, cb) {
   //token = token ? parseInt(token, 10) : 0;
+  var whereClause = listBuildWhere(params);
   connection.query(
-    'SELECT * FROM `books` b left join imagesUrl i on (b.id = i.bookId)', //LIMIT ? OFFSET ?
+    'SELECT * FROM `books` b left join imagesUrl i on (b.id = i.bookId)' + whereClause, //LIMIT ? OFFSET ?
     //[limit, token],
     (err, results) => {
       if (err) {
@@ -89,6 +115,7 @@ function createImagesUrl(data, cb) {
 }
 
 function read(id, cb) {
+  //console.log(id);
   connection.query(
     'SELECT * FROM `books` left join `imagesUrl` on (books.id = imagesUrl.bookId) WHERE books.id = ?',
     id,

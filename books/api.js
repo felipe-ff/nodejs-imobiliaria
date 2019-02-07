@@ -32,8 +32,8 @@ router.use(bodyParser.json());
 /**
  * GET /api/books
  */
-router.get('/', (req, res, next) => {
-  getModel().list(10, req.query.pageToken, (err, entities, cursor) => {
+router.get('/filters?/:filters?', (req, res, next) => {
+  getModel().list(10, filters, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
       next(err);
       return;
@@ -114,6 +114,8 @@ router.post('/login', (req, res, next) => {
  * GET /api/books/:id
  */
 router.get('/:book', (req, res, next) => {
+  console.log('AQUI');
+  console.log(req.params);
   getModel().read(req.params.book, (err, entity) => {
     if (err) {
       next(err);

@@ -38,6 +38,8 @@ router.use((req, res, next) => {
  * Display a page of books (up to ten at a time).
  */
 router.get('/', (req, res, next) => {
+  //const { body: { user } } = req;
+
   getModel().list(10, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
       next(err);
@@ -72,20 +74,18 @@ router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req,
     let data = req.body;
     let dataImg = {};
 
+    console.log(data);
     // Was an image uploaded? If so, we'll use its public URL
     // in cloud storage.    
     dataImg.imageUrl = [];
     if (req.files) {
       req.files.forEach(element => {
         if (element.cloudStoragePublicUrl) {
-          console.log('entrando');
           dataImg.imageUrl.push(element.cloudStoragePublicUrl);
         }
       });
       //dataImg.imageUrl = dataImg.imageUrl.slice(0, -1);
     }
-
-    //data.author = 'test2';
 
     // Save the data to the database.
     getModel().create(data, (err, savedId) => {
@@ -96,7 +96,6 @@ router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req,
 
       dataImg.bookId = savedId;
       if (req.files) {
-        console.log(dataImg);
         getModel().createImagesUrl(dataImg, (err, savedData) => {
           if (err) {
             next(err);
