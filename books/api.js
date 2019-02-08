@@ -114,8 +114,6 @@ router.post('/login', (req, res, next) => {
  * GET /api/books/:id
  */
 router.get('/:book', (req, res, next) => {
-  console.log('AQUI');
-  console.log(req.params);
   getModel().read(req.params.book, (err, entity) => {
     if (err) {
       next(err);

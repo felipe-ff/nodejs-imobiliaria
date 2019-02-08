@@ -34,23 +34,21 @@ const connection = mysql.createConnection(options);
 
 function listBuildWhere(params) {
   let sql = '';
-  console.log('AQUI: ' + params);
   if (params && params !== 'undefined') {
     let obj = JSON.parse(params);
-    let isFirst = true;
     for (const key in obj) {
       if (obj.hasOwnProperty(key) && obj[key]) {
         let value = obj[key];
-        sql += isFirst ? ' where ' : ' AND ';
+        if (value.hasOwnProperty('code') && !value.code) continue;
+        sql += !sql ? ' where ' : ' AND ';
         if (key === 'rangeValues') {
           sql += 'b.price BETWEEN ' + value[0] + ' AND ' + value[1];
         } else if (key === 'purpose') {
-          sql += key + ' = ' + value.code;
+          sql += key + ' = ' + "\'" + value.code + "\'";
         } else {
           sql += key + ' = ' + value;
         }
       }
-      isFirst = false;
     }
     console.log(sql);
   }
