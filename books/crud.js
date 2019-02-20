@@ -18,7 +18,7 @@ const bodyParser = require('body-parser');
 const images = require('../lib/images');
 
 function getModel() {
-  return require(`./model-${require('../config').get('DATA_BACKEND')}`);
+  return require('./model-datastore');
 }
 
 const router = express.Router();
@@ -81,12 +81,13 @@ router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req,
     if (req.files) {
       req.files.forEach(element => {
         if (element.cloudStoragePublicUrl) {
-          dataImg.imageUrl.push(element.cloudStoragePublicUrl);
+          dataImg.imageUrl.push(element.cloudStoragePublicUrl); //usar o filter aqui
         }
       });
       //dataImg.imageUrl = dataImg.imageUrl.slice(0, -1);
     }
 
+    data.imageUrl = dataImg.imageUrl;
     // Save the data to the database.
     getModel().create(data, (err, savedId) => {
       if (err) {
@@ -95,16 +96,8 @@ router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req,
       }
 
       dataImg.bookId = savedId;
-      if (req.files) {
-        getModel().createImagesUrl(dataImg, (err, savedData) => {
-          if (err) {
-            next(err);
-            return;
-          }
-        });
-      }
-
-      res.json(`${savedId}`);
+      //res.json(`${savedId}`);
+      res.json(savedId);
     });
   }
 );

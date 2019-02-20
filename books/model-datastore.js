@@ -85,12 +85,12 @@ function toDatastore(obj, nonIndexed) {
 // The ``limit`` argument determines the maximum amount of results to
 // return per page. The ``token`` argument allows requesting additional
 // pages. The callback is invoked with ``(err, books, nextPageToken)``.
-function list(limit, token, cb) {
+function list(limit, filters, token, cb) {
   const q = ds
-    .createQuery([kind])
-    .limit(limit)
-    .order('title')
-    .start(token);
+    .createQuery([kind]);
+    //.limit(limit)
+    //.order('title')
+    //.start(token);
 
   ds.runQuery(q, (err, entities, nextQuery) => {
     if (err) {
@@ -109,6 +109,8 @@ function list(limit, token, cb) {
 // data is automatically translated into Datastore format. The book will be
 // queued for background processing.
 function update(id, data, cb) {
+  console.log('CERTO');
+  console.log(data);
   let key;
   if (id) {
     key = ds.key([kind, parseInt(id, 10)]);
@@ -122,6 +124,7 @@ function update(id, data, cb) {
   };
 
   ds.save(entity, err => {
+    //console.log(data);
     data.id = entity.key.id;
     cb(err, err ? null : data);
   });
@@ -144,6 +147,7 @@ function read(id, cb) {
       cb(err);
       return;
     }
+
     cb(null, fromDatastore(entity));
   });
 }
@@ -157,6 +161,7 @@ module.exports = {
   create,
   read,
   update,
+  //createImagesUrl: createImagesUrl,
   delete: _delete,
   list,
 };

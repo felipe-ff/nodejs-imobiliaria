@@ -15,13 +15,14 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const images = require('../lib/images');
 const passport = require('passport');
 const auth = require('../routes/auth');
 const User = require('../models/User');
 const moment = require('moment');
 
 function getModel() {
-  return require(`./model-${require('../config').get('DATA_BACKEND')}`);
+  return require('./model-datastore');
 }
 
 const router = express.Router();
@@ -126,12 +127,28 @@ router.get('/:book', (req, res, next) => {
 /**
  * PUT /api/books/:id
  */
-router.put('/:book', auth.required, (req, res, next) => {
-  getModel().update(req.params.book, req.body, (err, entity) => {
+router.put('/:book', auth.required, images.multer.array('images'), images.sendUploadToGCS, (req, res, next) => {
+  let book = req.body;
+  if (!book.imageUrl) { 
+    book.imageUrl = [] 
+  } else {
+    book.imageUrl = book.imageUrl.split(',');
+  }
+  console.log(req.body);
+    if (req.files) {
+      req.files.forEach(element => {
+        if (element.cloudStoragePublicUrl) {
+          book.imageUrl.push(element.cloudStoragePublicUrl); //TODO usar o filter aqui
+        }
+      });
+    }
+
+  getModel().update(req.params.book, book, (err, entity) => {    
     if (err) {
       next(err);
       return;
     }
+    console.log(entity);
     res.json(entity);
   });
 });
