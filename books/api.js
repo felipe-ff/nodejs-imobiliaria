@@ -129,26 +129,22 @@ router.get('/:book', (req, res, next) => {
  */
 router.put('/:book', auth.required, images.multer.array('images'), images.sendUploadToGCS, (req, res, next) => {
   let book = req.body;
-  if (!book.imageUrl) { 
-    book.imageUrl = [] 
-  } else {
-    book.imageUrl = book.imageUrl.split(',');
+
+  book.imageUrl = !book.imageUrl ? [] : book.imageUrl.split(',');
+
+  if (req.files) {
+    req.files.map( function(obj) {
+      book.imageUrl.push(obj.cloudStoragePublicUrl);
+    });
   }
-  console.log(req.body);
-    if (req.files) {
-      req.files.forEach(element => {
-        if (element.cloudStoragePublicUrl) {
-          book.imageUrl.push(element.cloudStoragePublicUrl); //TODO usar o filter aqui
-        }
-      });
-    }
+
+  delete book.id;
 
   getModel().update(req.params.book, book, (err, entity) => {    
     if (err) {
       next(err);
       return;
     }
-    console.log(entity);
     res.json(entity);
   });
 });

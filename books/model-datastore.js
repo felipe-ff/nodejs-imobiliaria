@@ -109,8 +109,6 @@ function list(limit, filters, token, cb) {
 // data is automatically translated into Datastore format. The book will be
 // queued for background processing.
 function update(id, data, cb) {
-  console.log('CERTO');
-  console.log(data);
   let key;
   if (id) {
     key = ds.key([kind, parseInt(id, 10)]);
