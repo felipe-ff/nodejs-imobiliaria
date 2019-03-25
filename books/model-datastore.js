@@ -86,19 +86,21 @@ function toDatastore(obj, nonIndexed) {
 // return per page. The ``token`` argument allows requesting additional
 // pages. The callback is invoked with ``(err, books, nextPageToken)``.
 function list(limit, filters, token, cb) {
-  const q = ds
-    .createQuery([kind]);
-    //.limit(limit)
-    //.order('title')
-    //.start(token);
+  let q = ds.createQuery([kind]);    //.limit(limit).order('title').start(token);
+
+  if (filters && filters !== 'undefined') {
+    let obj = JSON.parse(filters);
+    if (obj.purpose.code) {
+      q.filter('purpose', '=', obj.purpose.code);
+    }
+  }
 
   ds.runQuery(q, (err, entities, nextQuery) => {
     if (err) {
       cb(err);
       return;
     }
-    const hasMore =
-      nextQuery.moreResults !== Datastore.NO_MORE_RESULTS
+    const hasMore = nextQuery.moreResults !== Datastore.NO_MORE_RESULTS
         ? nextQuery.endCursor
         : false;
     cb(null, entities.map(fromDatastore), hasMore);
@@ -122,7 +124,6 @@ function update(id, data, cb) {
   };
 
   ds.save(entity, err => {
-    //console.log(data);
     data.id = entity.key.id;
     cb(err, err ? null : data);
   });

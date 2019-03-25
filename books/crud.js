@@ -74,7 +74,6 @@ router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req,
     let data = req.body;
     let dataImg = {};
 
-    console.log(data);
     // Was an image uploaded? If so, we'll use its public URL
     // in cloud storage.    
     dataImg.imageUrl = [];

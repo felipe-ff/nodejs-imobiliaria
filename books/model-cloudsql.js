@@ -67,8 +67,6 @@ function list(limit, params, token, cb) {
         return;
       }
 
-      //console.log(results);
-      
       let values = {};
       let uniqueArray = results.filter(function(item) {
           let val = item['id'];
@@ -113,7 +111,6 @@ function createImagesUrl(data, cb) {
 }
 
 function read(id, cb) {
-  //console.log(id);
   connection.query(
     'SELECT * FROM `books` left join `imagesUrl` on (books.id = imagesUrl.bookId) WHERE books.id = ?',
     id,
