@@ -19,6 +19,7 @@ const images = require('../lib/images');
 const passport = require('passport');
 const auth = require('../routes/auth');
 const User = require('../models/User');
+const db = require('../config/db');
 const moment = require('moment');
 
 function getModel() {
@@ -30,11 +31,13 @@ const router = express.Router();
 // Automatically parse request body as JSON
 router.use(bodyParser.json());
 
+db.connectToMongo();
+
 /**
  * GET /api/books
  */
-router.get('/filters?/:filters?', (req, res, next) => {
-  getModel().list(10, req.params.filters, req.query.pageToken, (err, entities, cursor) => {
+router.get('/filters?/:filters?/limit?/:limit?/offset?/:offset?', (req, res, next) => {
+  getModel().list(req.params.limit, req.params.offset, req.params.filters, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
       next(err);
       return;
