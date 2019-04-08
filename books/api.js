@@ -21,6 +21,7 @@ const auth = require('../routes/auth');
 const User = require('../models/User');
 const db = require('../config/db');
 const moment = require('moment');
+const propertyModel = require('../models/property');
 
 function getModel() {
   return require('./model-datastore');
@@ -37,15 +38,13 @@ db.connectToMongo();
  * GET /api/books
  */
 router.get('/filters?/:filters?/limit?/:limit?/offset?/:offset?', (req, res, next) => {
-  getModel().list(req.params.limit, req.params.offset, req.params.filters, req.query.pageToken, (err, entities, cursor) => {
+  propertyModel.propertySchema.find(function (err, properties) {
     if (err) {
       next(err);
       return;
     }
-    //console.log(moment().isBefore(moment(req.session.cookie._expires)));
-
     res.json({
-      items: entities,
+      items: properties,
     });
   });
 });
@@ -62,6 +61,36 @@ router.post('/', (req, res, next) => {
     res.json(entity);
   });
 });
+
+router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req, res, next) => {
+  let data = req.body;
+  let dataImg = {};
+
+  // Was an image uploaded? If so, we'll use its public URL
+  // in cloud storage.    
+  dataImg.imageUrl = [];
+  if (req.files) {
+    req.files.forEach(element => {
+      if (element.cloudStoragePublicUrl) {
+        dataImg.imageUrl.push(element.cloudStoragePublicUrl); //usar o filter aqui
+      }
+    });
+    //dataImg.imageUrl = dataImg.imageUrl.slice(0, -1);
+  }
+
+  data.imageUrl = dataImg.imageUrl;
+
+  var awesome_instance = new propertyModel.propertySchema(data);
+  awesome_instance.save(function (err, obj) {
+    if (err) {
+      next(err);
+      return;
+    }
+    dataImg.bookId = obj.id;
+    res.json(obj.id);
+  });
+}
+);
 
 /**
  * POST /api/books/login
@@ -156,7 +185,7 @@ router.put('/:book', auth.required, images.multer.array('images'), images.sendUp
  * DELETE /api/books/:id
  */
 router.delete('/:book', auth.required, (req, res, next) => {
-  getModel().delete(req.params.book, err => {
+  propertyModel.propertySchema.remove({ _id: req.params.book }, function(err) {
     if (err) {
       next(err);
       return;

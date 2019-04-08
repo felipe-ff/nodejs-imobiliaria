@@ -86,7 +86,13 @@ function toDatastore(obj, nonIndexed) {
 // return per page. The ``token`` argument allows requesting additional
 // pages. The callback is invoked with ``(err, books, nextPageToken)``.
 function list(limit, offset, filters, token, cb) {
-  let q = ds.createQuery([kind]);    //.limit(limit).order('title').start(token);
+
+  Athlete.find({ 'sport': 'Tennis' }, 'name age', function (err, athletes) {
+    if (err) return handleError(err);
+    // 'athletes' contains the list of athletes that match the criteria.
+  })
+
+  /* let q = ds.createQuery([kind]);    //.limit(limit).order('title').start(token);
   console.log(limit);
   if (limit) q = q.limit(limit).offset(offset);
 
@@ -106,7 +112,7 @@ function list(limit, offset, filters, token, cb) {
         ? nextQuery.endCursor
         : false;
     cb(null, entities.map(fromDatastore), hasMore);
-  });
+  }); */
 }
 
 // Creates a new book or updates an existing book with new data. The provided

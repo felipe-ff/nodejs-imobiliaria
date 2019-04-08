@@ -44,7 +44,6 @@ app.use(session({ secret: 'passport-tutorial', cookie: { expires: new Date(now.g
 
 
 // Books
-app.use('/books', require('./books/crud'));
 app.use('/api/books', require('./books/api'));
 
 // Redirect root to /books
