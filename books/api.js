@@ -32,11 +32,8 @@ const router = express.Router();
 // Automatically parse request body as JSON
 router.use(bodyParser.json());
 
-db.connectToMongo();
+db.connectToMongo();;
 
-/**
- * GET /api/books
- */
 router.get('/filters?/:filters?/limit?/:limit?/offset?/:offset?', (req, res, next) => {
   propertyModel.propertySchema.find(function (err, properties) {
     if (err) {
@@ -46,19 +43,6 @@ router.get('/filters?/:filters?/limit?/:limit?/offset?/:offset?', (req, res, nex
     res.json({
       items: properties,
     });
-  });
-});
-
-/**
- * POST /api/books
- */
-router.post('/', (req, res, next) => {
-  getModel().create(req.body, (err, entity) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.json(entity);
   });
 });
 
@@ -143,9 +127,7 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
-/**
- * GET /api/books/:id
- */
+/** GET /api/books/:id */
 router.get('/:book', (req, res, next) => {
   getModel().read(req.params.book, (err, entity) => {
     if (err) {
@@ -156,9 +138,7 @@ router.get('/:book', (req, res, next) => {
   });
 });
 
-/**
- * PUT /api/books/:id
- */
+/** PUT /api/books/:id */
 router.put('/:book', auth.required, images.multer.array('images'), images.sendUploadToGCS, (req, res, next) => {
   let book = req.body;
 
