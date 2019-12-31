@@ -1,6 +1,3 @@
-/**
- * Created by Sebastião Realino on 15/09/2017.
- */
 const mongoose = require('mongoose');
 //import config from './environment';
 //import constants from '../api/utils/constants';
