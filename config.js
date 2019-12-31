@@ -37,7 +37,7 @@ nconf
   // 4. Defaults
   .defaults({
     // Typically you will create a bucket with the same name as your project ID.
-    CLOUD_BUCKET: '',
+    CLOUD_BUCKET: 'imob-db',
 
     // dataBackend can be 'datastore' or 'cloudsql'. Be sure to
     // configure the appropriate settings for each storage engine below.

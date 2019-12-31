@@ -32,37 +32,6 @@ router.use((req, res, next) => {
   next();
 });
 
-/**
- * GET /books
- *
- * Display a page of books (up to ten at a time).
- */
-router.get('/', (req, res, next) => {
-  //const { body: { user } } = req;
-
-  getModel().list(10, req.query.pageToken, (err, entities, cursor) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.render('books/list.pug', {
-      books: entities,
-      nextPageToken: cursor,
-    });
-  });
-});
-
-/**
- * GET /books/add
- *
- * Display a form for creating a book.
- */
-router.get('/add', (req, res) => {
-  res.render('books/form.pug', {
-    book: {},
-    action: 'Add',
-  });
-});
 
 /**
  * POST /books/add
@@ -75,7 +44,7 @@ router.post('/add', images.multer.array('images'), images.sendUploadToGCS, (req,
     let dataImg = {};
 
     // Was an image uploaded? If so, we'll use its public URL
-    // in cloud storage.    
+    // in cloud storage.
     dataImg.imageUrl = [];
     if (req.files) {
       req.files.forEach(element => {
@@ -117,66 +86,6 @@ router.get('/:book/edit', (req, res, next) => {
       book: entity,
       action: 'Edit',
     });
-  });
-});
-
-/**
- * POST /books/:id/edit
- *
- * Update a book.
- */
-router.post(
-  '/:book/edit',
-  images.multer.single('image'),
-  images.sendUploadToGCS,
-  (req, res, next) => {
-    let data = req.body;
-
-    // Was an image uploaded? If so, we'll use its public URL
-    // in cloud storage.
-    if (req.file && req.file.cloudStoragePublicUrl) {
-      req.body.imageUrl = req.file.cloudStoragePublicUrl;
-    }
-
-    getModel().update(req.params.book, data, (err, savedData) => {
-      if (err) {
-        next(err);
-        return;
-      }
-      res.redirect(`${req.baseUrl}/${savedData.id}`);
-    });
-  }
-);
-
-/**
- * GET /books/:id
- *
- * Display a book.
- */
-router.get('/:book', (req, res, next) => {
-  getModel().read(req.params.book, (err, entity) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.render('books/view.pug', {
-      book: entity,
-    });
-  });
-});
-
-/**
- * GET /books/:id/delete
- *
- * Delete a book.
- */
-router.get('/:book/delete', (req, res, next) => {
-  getModel().delete(req.params.book, err => {
-    if (err) {
-      next(err);
-      return;
-    }
-    //res.redirect(req.baseUrl);
   });
 });
 

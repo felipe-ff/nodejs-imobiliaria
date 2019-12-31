@@ -87,7 +87,6 @@ function toDatastore(obj, nonIndexed) {
 // pages. The callback is invoked with ``(err, books, nextPageToken)``.
 function list(limit, offset, filters, token, cb) {
   let q = ds.createQuery([kind]);    //.limit(limit).order('title').start(token);
-  console.log(limit);
   if (limit) q = q.limit(limit).offset(offset);
 
   if (filters && filters !== 'undefined') {

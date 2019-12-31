@@ -136,14 +136,12 @@ router.put('/:book', auth.required, images.multer.array('images'), images.sendUp
   book.imageUrl = !book.imageUrl ? [] : book.imageUrl.split(',');
 
   if (req.files) {
-    req.files.map( function(obj) {
-      book.imageUrl.push(obj.cloudStoragePublicUrl);
-    });
-  }
+    req.files.map(obj => book.imageUrl.push(obj.cloudStoragePublicUrl));
+  };
 
   delete book.id;
 
-  getModel().update(req.params.book, book, (err, entity) => {    
+  getModel().update(req.params.book, book, (err, entity) => {
     if (err) {
       next(err);
       return;
