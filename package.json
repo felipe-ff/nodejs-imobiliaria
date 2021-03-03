@@ -50,7 +50,7 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "prompt": "1.0.0",
-    "pug": "^2.0.3",
+    "pug": "^3.0.1",
     "uglify-js": "3.4.9"
   },
   "devDependencies": {
